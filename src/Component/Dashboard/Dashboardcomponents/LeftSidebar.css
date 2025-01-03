@@ -1,0 +1,75 @@
+
+.dropdown-menu.show {
+    display: block;
+    border: none;
+    /* border: 1px solid #007bff; */
+    max-height: 500px;
+    border-radius: 22px;
+    box-shadow: none;
+    transition: max-height 1s ease, opacity 0.3s ease;
+    position: relative;
+   
+    opacity: 1;
+  
+}
+.dropdown {
+    border: none; /* Default state */
+    transition: border 0.3s ease; /* Smooth transition */
+  }
+  
+  .dropdown.active-dropdown {
+    border: 1px solid #00BCD4;
+    border-radius: 24px
+  }
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Dropdown container */
+.dropdown-menu {
+    position: relative;
+    z-index: 1000; /* Adjust as needed */
+    left: 0;
+    border: 0px solid rgba(0, 0, 0, .15);
+    top: 100%; /* Ensure it appears below the trigger */
+    margin-top: 5px; /* Add space between the trigger and dropdown */
+    overflow: hidden; /* Prevent content spilling out */
+    width: 100%; /* Match the container width */
+    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+
+/* Parent link style */
+.dropdown > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    max-height: 200px; /* Adjust based on content */
+    color: #333;
+    padding: 0px;
+   
+}
+.dropdown-menu.show .dropdown{
+    border: 1px solid #26C6DA;
+}
+
+/* Dropdown list items */
+
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #555;
+}
+
+.dropdown-menu li a:hover {
+    color: #007bff;
+}
