@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import Home from "../Pages/Home/Home";
+import ImageEditor from "../Component/Dashboard/ImageCropping";
 import About from "../Pages/About/About";
 import StoreProduct from "../Pages/Store/StoreProduct";
 import Blog from "../Pages/Blog/Blog";
@@ -57,11 +58,11 @@ import Teamboards from "../Pages/Dashboard/DashBoardPages/Teamboards";
 import Trial from "../Pages/Trial";
 import ArtistManagement from "../Pages/ArtistManagement";
 import ArtistManageTable from "../Pages/Dashboard/DashBoardPages/ArtistManageTable";
-import BuyerManageTable from "../Pages/Dashboard/DashBoardPages/BuyerManageTable"
+import BuyerManageTable from "../Pages/Dashboard/DashBoardPages/BuyerManageTable";
 import ArtistDetail from "../Pages/Dashboard/DashBoardPages//ArtistDetail";
 import ProductUpload from "../Pages/Dashboard/DashBoardPages/productUploade";
 
-import BlogRequest from "../Pages/Dashboard/DashBoardPages/BlogRequest"
+import BlogRequest from "../Pages/Dashboard/DashBoardPages/BlogRequest";
 
 import ResellPage from "../Pages/ResellPage/ResellPage";
 
@@ -106,12 +107,12 @@ const AppRoutes = () => {
           <Route path="/invoice" element={<Invoices />} />
           <Route path="/search" element={<SearchResult />} />
           <Route path="/teamboard" element={<Teamboards />} />
-       
+          <Route path="/ImageEditor" element={<ImageEditor />} />
           <Route path="/create-blog" element={<BlogPost />} />
           <Route path="/Bidding-page" element={<Biddingpage />} />
           <Route path="/Trading-page" element={<TradingPage />} />
           <Route path="/Resell-page" element={<ResellPage />} />
-<Route path='/Product-uploade' element={<ProductUpload/>}/>
+          <Route path="/Product-uploade" element={<ProductUpload />} />
 
           <Route path="/403" element={<ForbiddonError />} />
           <Route path="/404" element={<NotFoundError />} />
@@ -125,7 +126,7 @@ const AppRoutes = () => {
           <Route path="/ArtistManageTable" element={<ArtistManageTable />} />
           <Route path="/artists/:id" element={<ArtistDetail />} />
           <Route path="/BlogRequest" element={<BlogRequest />} />
-          <Route path="/BuyerManageTable" element={<BuyerManageTable/>}/>
+          <Route path="/BuyerManageTable" element={<BuyerManageTable />} />
         </Routes>
       </LayoutWrapper>
     </Router>
@@ -138,11 +139,12 @@ const LayoutWrapper = ({ children }) => {
     "/completeprofile",
     "/image-edit",
     "/artists/:id",
-    "/ArtistManageTable",//superadmin ,admin  
-    "/BuyerManageTable",//superadmin ,admin  
-    "/teamboard",//superadmin ,admin  
-    "/maintenance",//superadmin ,admin  
+    "/ArtistManageTable", //superadmin ,admin
+    "/BuyerManageTable", //superadmin ,admin
+    "/teamboard", //superadmin ,admin
+    "/maintenance", //superadmin ,admin
     "/search",
+    "/imageeditor",
     "/invoice",
     "/imagegallery",
     "/Fileimages",
@@ -152,7 +154,7 @@ const LayoutWrapper = ({ children }) => {
     "/Filedocs",
     "/create-blog",
     "/dashboardaccess",
-    "/Bloglist",//superadmin ,admin  
+    "/Bloglist", //superadmin ,admin
     "/Filedashboard",
     "/Blogdetails",
     "/Blogpost",
@@ -160,8 +162,8 @@ const LayoutWrapper = ({ children }) => {
     "/Appcontact",
     "/Appchat",
     "/Blogdashboard",
-   "/BlogRequest",    //superadmin ,admin
-   "/Product-uploade"  
+    "/BlogRequest", //superadmin ,admin
+    "/Product-uploade",
   ];
   const shouldHideHeaderFooter = hideHeaderFooterRoutes.includes(
     location.pathname

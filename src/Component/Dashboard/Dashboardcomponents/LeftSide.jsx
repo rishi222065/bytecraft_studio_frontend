@@ -176,17 +176,17 @@ const UserAccount = () => {
           </li>
           <li className="nav-item">
             <a className="nav-link" data-toggle="tab" href="#Chat">
-              <i class="fas fa-book-open"></i>
+              <i className="fas fa-book-open"></i>
             </a>
           </li>
           <li className="nav-item">
             <a className="nav-link" data-toggle="tab" href="#setting">
-              <i class="fa fa-cog" aria-hidden="true"></i>
+              <i className="fa fa-cog" aria-hidden="true"></i>
             </a>
           </li>
           <li className="nav-item">
             <a className="nav-link" data-toggle="tab" href="#question">
-              <i class="fa fa-question-circle" aria-hidden="true"></i>
+              <i className="fa fa-question-circle" aria-hidden="true"></i>
             </a>
           </li>
         </ul>

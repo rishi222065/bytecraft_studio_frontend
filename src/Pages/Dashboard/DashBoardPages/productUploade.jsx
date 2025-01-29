@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../../Component/Dashboard/Dashboardcomponents/Navbar";
 import UserAccount from "../../../Component/Dashboard/Dashboardcomponents/LeftSide";
 import RightIconBar from "../../../Component/Dashboard/Dashboardcomponents/RightIconBar";
-import iamgeEditior from "../../../Component/Dashboard/ImageCropping" 
+import ImageEditor from "../../../Component/Dashboard/ImageCropping";
 
 import "froala-editor/css/froala_style.min.css";
 import "froala-editor/css/froala_editor.pkgd.min.css";
@@ -30,58 +30,138 @@ const loadScript = (src) => {
   });
 };
 
-function BlogPost() {
-  const [loading, setLoading] = useState(true);
+function ProductUpload() {
+  const [successMessage, setsuccessMessage] = useState();
+  const [errorMessage, seterrorMessage] = useState();
   const [formData, setFormData] = useState({
     productName: "",
     artistName: "",
-    productImage: null,
     productCategory: "",
+    newPrice: "",
+    size: "",
+    oldPrice: "",
+    images: [], // To store all image files
+    mainImage: null, // Add main image to state
+
+
+
   });
-  const [content, setContent] = useState(""); // For Froala Editor content
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [content, setContent] = useState(""); // Froala Editor content
+
+  // Function to convert a dataURL to a Blob
+  const dataURLToBlob = (dataURL) => {
+    if (!dataURL || !dataURL.includes(",")) {
+      console.error("Invalid dataURL provided to dataURLToBlob.");
+      return null;
+    }
+    try {
+      const parts = dataURL.split(",");
+      const mime = parts[0].match(/:(.*?);/)[1];
+      const bstr = atob(parts[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    } catch (error) {
+      console.error("Error converting dataURL to Blob:", error.message);
+      return null;
+    }
+  };
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 2000);
-
-    // Load CSS files
     loadStyle("/DashboardAssets/assets/vendor/bootstrap/css/bootstrap.min.css");
     loadStyle(
       "/DashboardAssets/assets/vendor/font-awesome/css/font-awesome.min.css"
     );
     loadStyle("/DashboardAssets/assets/css/main.css");
 
-    // Load scripts
     loadScript("/DashboardAssets/assets/bundles/libscripts.bundle.js").catch(
       (err) => console.error("Failed to load script:", err)
     );
   }, []);
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "productImage") {
-      setFormData({ ...formData, productImage: files[0] });
+    if (name === "images") {
+      const filesArray = Array.from(files);
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...filesArray], // Append new images to the existing ones
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
-  // Handle form submission
+  // Function to strip HTML tags and get plain text content
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+
+    // Convert the main image data URL to a Blob
+    const mainImageBlob = dataURLToBlob(formData.mainImage);
+    const plainTextContent = stripHtmlTags(content);
+
+    const token = localStorage.getItem("token");
     const formDataObj = new FormData();
 
-    console.log("Form Data:", { ...formData, productDescription: content }); // Debugging log
+    formDataObj.append("productName", formData.productName);
+    formDataObj.append("artistName", formData.artistName);
+    formDataObj.append("productCategory", formData.productCategory);
+    formDataObj.append("newPrice", formData.newPrice);
+    formDataObj.append("oldPrice", formData.oldPrice);
+    formDataObj.append("description", plainTextContent);
+    formDataObj.append("size", formData.size);
 
-    // Append all form data including the blog description
-    for (const key in formData) {
-      formDataObj.append(key, formData[key]);
+    if (mainImageBlob) {
+      formDataObj.append("mainImage", mainImageBlob, "cropped-image.png");
+    } else {
+      console.error("Main image is missing!");
     }
-    formDataObj.append("productDescription", content);
 
+    // Append additional images
+  formData.images.forEach((image) => {
+  formDataObj.append("images", image); // Ensure the field name matches
+});
+
+
+    // Log formData entries
+    for (let [key, value] of formDataObj.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/product-management/upload",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formDataObj,
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok) {
+        setsuccessMessage("Product uploaded successfully!");
+      } else {
+        seterrorMessage(result.message || "Failed to upload product.");
+      }
+    } catch (err) {
+      seterrorMessage("Error submitting form. Please try again.");
+      console.error("Error submitting form:", err);
+    }
   };
 
   return (
@@ -94,7 +174,7 @@ function BlogPost() {
           <div className="block-header">
             <div className="row">
               <div className="col-lg-6 col-md-6 col-sm-12">
-                <h2>Create Blog Post</h2>
+                <h2>Create Product</h2>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
                     <a href="/">
@@ -102,7 +182,7 @@ function BlogPost() {
                     </a>
                   </li>
                   <li className="breadcrumb-item">App</li>
-                  <li className="breadcrumb-item active">Blog</li>
+                  <li className="breadcrumb-item active">Product Upload</li>
                 </ul>
               </div>
             </div>
@@ -145,7 +225,7 @@ function BlogPost() {
                       <input
                         type="text"
                         name="newPrice"
-                        value={formData.artistName}
+                        value={formData.newPrice}
                         onChange={handleChange}
                         className="form-control"
                         placeholder="$$"
@@ -155,8 +235,19 @@ function BlogPost() {
                     <div className="form-group">
                       <input
                         type="text"
+                        name="size"
+                        value={formData.newsize}
+                        onChange={handleChange}
+                        className="form-control"
+                        placeholder="Enter size"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        type="text"
                         name="oldPrice"
-                        value={formData.artistName}
+                        value={formData.oldPrice}
                         onChange={handleChange}
                         className="form-control"
                         placeholder="$$"
@@ -180,18 +271,30 @@ function BlogPost() {
                         <option value="Sports">Sports</option>
                       </select>
                     </div>
-                
+
+                    <div className="form-group mt-3 main-image">
+                      <ImageEditor
+                        onCroppedImage={(dataURL) => {
+                          console.log("Cropped Image Data URL:", dataURL);
+                          setFormData((prev) => ({
+                            ...prev,
+                            mainImage: dataURL, // Update mainImage in formData
+                          }));
+                        }}
+                      />
+                      ;
+                    </div>
+
+                    {/* Add multiple image fields */}
                     <div className="form-group mt-3">
-                       <iamgeEditior/> 
-                      
-                      </div>
-                    <div className="form-group mt-3">
+                      <label>Upload Additional Images</label>
                       <input
                         type="file"
-                        name="productImage"
+                        name="images"
                         onChange={handleChange}
                         className="form-control-file"
-                        required
+                        multiple
+                        accept="image/*"
                       />
                     </div>
                     <div className="form-group mt-3">
@@ -211,7 +314,7 @@ function BlogPost() {
                       type="submit"
                       className="btn btn-block btn-primary mt-3"
                     >
-                      Post Blog
+                      Upload product
                     </button>
                   </form>
                 </div>
@@ -224,4 +327,4 @@ function BlogPost() {
   );
 }
 
-export default BlogPost;
+export default ProductUpload;

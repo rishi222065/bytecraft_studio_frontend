@@ -35,7 +35,7 @@ const Wishlist = () => {
                       </td>
                       <td className="fwEbold border-top-0 border-bottom px-0 py-6" data-value="INR" data-price={product.newPrice}>₹{product.newPrice} </td>
                       <td className="border-top-0 border-bottom px-0 py-6">
-					  <Link to={`/shop-detail/${product.id}`} class="btn btnTheme btnShop fwEbold text-white md-round py-3 px-4 py-md-3 px-md-4">View</Link>
+					  <Link to={`/shop-detail/${product.id}`} className="btn btnTheme btnShop fwEbold text-white md-round py-3 px-4 py-md-3 px-md-4">View</Link>
                       </td>
                       <td className="fwEbold border-top-0 border-bottom px-0 py-6" >
                         <a href="#" className="fas fa-times float-right" onClick={() => removeFromWishlist(product.id)}></a>
